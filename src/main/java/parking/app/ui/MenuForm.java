@@ -1,4 +1,7 @@
 package parking.app.ui;
 
-public class Prueba {
+import javax.swing.*;
+
+public class MenuForm {
+    private JPanel mainPanel;
 }
