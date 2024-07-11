@@ -1,6 +1,7 @@
 package parking.app.ui;
 
 import parking.app.controller.Controlador;
+import parking.app.service.Window;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -17,9 +18,11 @@ public class MainForm {
     private JButton generarInformePagosButton;
     private JTextField textFieldTipoCoche;
     private Controlador controlador;
+    private final JFrame frame = Window.frame;
 
     public MainForm() {
         controlador = new Controlador();
+
 
         registrarEntradaButton.addActionListener(new ActionListener() {
             @Override
