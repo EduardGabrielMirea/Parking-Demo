@@ -79,10 +79,11 @@ public class MainForm {
     }
 
     public void runMenu() {
-        JFrame frame = new JFrame("Parking Management System");
-        frame.setContentPane(new MainForm().mainPanel);
+        frame.setSize(800, 900);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+        frame.setContentPane(mainPanel);
         frame.setVisible(true);
     }
 }

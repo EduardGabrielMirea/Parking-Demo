@@ -2,19 +2,29 @@ package parking.app.controller;
 
 import parking.app.connect.DatabaseConnection;
 import parking.app.entity.*;
+import parking.app.ui.MainForm;
+import parking.app.ui.MenuForm;
 
+import javax.swing.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Controlador {
     private Map<String, Vehiculo> vehiculos;
     private Map<String, Estancia> estanciasActivas;
 
+    private MenuForm menuForm;
+
     public Controlador() {
         vehiculos = new HashMap<>();
         estanciasActivas = new HashMap<>();
+        menuForm = menuForm;
     }
 
     public void registrarEntrada(String matricula) {
@@ -41,7 +51,8 @@ public class Controlador {
         }
     }
 
-        public void registrarSalida(String matricula) {
+
+    public void registrarSalida(String matricula) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sqlSelect = "SELECT hora_entrada FROM estancias WHERE matricula = ? AND hora_salida IS NULL";
             LocalDateTime horaEntrada = null;
@@ -82,22 +93,6 @@ public class Controlador {
             e.printStackTrace();
         }
 
-        /*
-        Estancia estancia = estanciasActivas.remove(matricula);
-        if (estancia != null) {
-            estancia.registrarSalida(LocalDateTime.now());
-            Vehiculo vehiculo = vehiculos.get(matricula);
-            if (vehiculo != null) {
-                long minutos = estancia.calcularMinutos();
-                double pago = vehiculo.calcularPago(minutos);
-                // Procesar el pago si es necesario
-                if (vehiculo instanceof VehiculoResidente) {
-                    ((VehiculoResidente) vehiculo).agregarTiempoEstacionado(minutos);
-                }
-                // Mostrar el pago si es un VehiculoNoResidente
-            }
-        }
-         */
     }
 
     public void darDeAltaVehiculoOficial(String matricula) {
@@ -173,9 +168,16 @@ public class Controlador {
                 }
 
                 // Guardar el informe en un archivo
-                java.nio.file.Files.write(java.nio.file.Paths.get(nombreArchivo), informe.toString().getBytes());
+                Files.write(Paths.get(nombreArchivo), informe.toString().getBytes());
+
+                // Leer el contenido del archivo generado
+                String reportContent = new String(Files.readAllBytes(Paths.get(nombreArchivo)));
+
+                // Insertar el contenido en el JTextField
+                JTextField textField = new JTextField();
+                textField.setText(reportContent);
             }
-        } catch (SQLException | java.io.IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }

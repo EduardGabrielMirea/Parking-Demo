@@ -10,8 +10,5 @@ public class Window extends JFrame {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-
-        ImageIcon icon = new ImageIcon("src/main/resources/img/iconoPoke.png");
-        frame.setIconImage(icon.getImage());
     }
 }
