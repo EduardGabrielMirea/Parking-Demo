@@ -58,7 +58,6 @@ public class MenuForm {
                 JOptionPane.showMessageDialog(null, "Informe generado: " + nombreArchivo);
                 try {
                     String reportContent = new String(Files.readAllBytes(Paths.get(nombreArchivo)));
-
                     // Mostrar el contenido en un showMessageDialog
                     JOptionPane.showMessageDialog(null, reportContent, "Informe generado", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException ex) {

@@ -17,11 +17,13 @@ public class VehiculoResidente extends Vehiculo {
         return minutos * 0.002;
     }
 
-    public long getTiempoEstacionado() {
-        return tiempoEstacionado;
-    }
-
-    public void resetTiempoEstacionado() {
-        this.tiempoEstacionado = 0;
+    @Override
+    public void mostrarPago(Estancia estancia, Vehiculo vehiculo) {
+        if (vehiculo != null && vehiculo instanceof VehiculoResidente) {
+            double pago = vehiculo.calcularPago(estancia.calcularMinutos());
+            System.out.printf("El pago para la matrícula %s es: %.2f euros.%n", vehiculo.getMatricula(), pago);
+        }else {
+            System.out.println("No se encontró ningún vehículo o el vehículo no es un VehiculoNoResidente.");
+        }
     }
 }

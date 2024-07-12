@@ -2,7 +2,6 @@ package parking.app.controller;
 
 import parking.app.connect.DatabaseConnection;
 import parking.app.entity.*;
-import parking.app.ui.MainForm;
 import parking.app.ui.MenuForm;
 
 import javax.swing.*;
@@ -13,11 +12,10 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class Controlador {
     private Map<String, Vehiculo> vehiculos;
-    private Map<String, Estancia> estanciasActivas;
+    public Map<String, Estancia> estanciasActivas;
 
     private MenuForm menuForm;
 
@@ -77,14 +75,15 @@ public class Controlador {
                 if (estancia != null) {
                     estancia.registrarSalida(LocalDateTime.now());
                     long minutos = estancia.calcularMinutos();
-                    Vehiculo vehiculo = obtenerVehiculo(conn, matricula);
+                    Vehiculo vehiculo = obtenerVehiculo(matricula);
                     if (vehiculo != null) {
-                        double pago = vehiculo.calcularPago(minutos);
                         if (vehiculo instanceof VehiculoResidente) {
                             ((VehiculoResidente) vehiculo).agregarTiempoEstacionado(minutos);
                             actualizarTiempoResidente(conn, matricula, minutos);
+                            vehiculo.mostrarPago(estancia,vehiculo);
                         } else if (vehiculo instanceof VehiculoNoResidente) {
-                            // Mostrar pago
+                            ((VehiculoNoResidente) vehiculo).agregarTiempoEstacionado(minutos);
+                            vehiculo.mostrarPago(estancia,vehiculo);
                         }
                     }
                 }
@@ -169,37 +168,35 @@ public class Controlador {
 
                 // Guardar el informe en un archivo
                 Files.write(Paths.get(nombreArchivo), informe.toString().getBytes());
-
-                // Leer el contenido del archivo generado
-                String reportContent = new String(Files.readAllBytes(Paths.get(nombreArchivo)));
-
-                // Insertar el contenido en el JTextField
-                JTextField textField = new JTextField();
-                textField.setText(reportContent);
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    private Vehiculo obtenerVehiculo(Connection conn, String matricula) throws SQLException {
-        String sql = "SELECT tipo FROM vehiculos WHERE matricula = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, matricula);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    String tipo = rs.getString("tipo");
-                    if ("oficial".equals(tipo)) {
-                        return new VehiculoOficial(matricula);
-                    } else if ("residente".equals(tipo)) {
-                        return new VehiculoResidente(matricula);
-                    } else if ("no_residente".equals(tipo)) {
-                        return new VehiculoNoResidente(matricula);
+    public Vehiculo obtenerVehiculo(String matricula) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "SELECT tipo FROM vehiculos WHERE matricula = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, matricula);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        String tipo = rs.getString("tipo");
+                        if ("oficial".equals(tipo)) {
+                            return new VehiculoOficial(matricula);
+                        } else if ("residente".equals(tipo)) {
+                            return new VehiculoResidente(matricula);
+                        } else if ("no_residente".equals(tipo)) {
+                            return new VehiculoNoResidente(matricula);
+                        }
                     }
                 }
             }
+        }catch (SQLException e) {
+            e.printStackTrace();
         }
-        return null;
+        return new VehiculoNoResidente(matricula);
+
     }
 
     private void actualizarTiempoResidente(Connection conn, String matricula, long minutos) throws SQLException {

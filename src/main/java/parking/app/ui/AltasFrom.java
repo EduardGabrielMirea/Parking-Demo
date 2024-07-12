@@ -26,17 +26,33 @@ public class AltasFrom {
         darDeAltaVehiculoOficialButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String matricula = textFieldMatricula.getText();
-                controlador.darDeAltaVehiculoOficial(matricula);
-                JOptionPane.showMessageDialog(null, "Vehículo oficial dado de alta: " + matricula);
+                try {
+                    String matricula = textFieldMatricula.getText();
+                    if (matricula.isEmpty()){
+                        throw new IllegalArgumentException("La matrícula no puede estar vacía");
+                    }else {
+                        controlador.darDeAltaVehiculoOficial(matricula);
+                        JOptionPane.showMessageDialog(null, "Vehículo oficial dado de alta: " + matricula);
+                    }
+                }catch (IllegalArgumentException ex){
+                    JOptionPane.showMessageDialog(null,ex.getMessage());
+                }
             }
         });
         darDeAltaVehiculoResidenteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String matricula = textFieldMatricula.getText();
-                controlador.darDeAltaVehiculoResidente(matricula);
-                JOptionPane.showMessageDialog(null, "Vehículo residente dado de alta: " + matricula);
+                try {
+                    String matricula = textFieldMatricula.getText();
+                    if (matricula.isEmpty()){
+                        throw new IllegalArgumentException("La matrícula no puede estar vacía");
+                    }else {
+                        controlador.darDeAltaVehiculoResidente(matricula);
+                        JOptionPane.showMessageDialog(null, "Vehículo residente dado de alta: " + matricula);
+                    }
+                }catch (IllegalArgumentException ex){
+                    JOptionPane.showMessageDialog(null,ex.getMessage());
+                }
             }
         });
         volverAPrincipalButton.addMouseListener(new MouseAdapter() {
@@ -50,7 +66,7 @@ public class AltasFrom {
     }
 
     public void runAltas() {
-        frame.setSize(800, 900);
+        frame.setSize(300, 300);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

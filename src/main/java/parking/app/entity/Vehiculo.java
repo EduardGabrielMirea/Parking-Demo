@@ -12,4 +12,5 @@ public abstract class Vehiculo {
     }
 
     public abstract double calcularPago(long minutos);
+    public abstract void mostrarPago(Estancia estancia, Vehiculo vehiculo);
 }
