@@ -49,10 +49,12 @@ public class EntradaForm {
                     }else {
                         controlador.registrarSalida(matricula);
                         JOptionPane.showMessageDialog(null, "Salida registrada para: " + matricula);
-                        Vehiculo vehiculo = controlador.obtenerVehiculo(matricula);
-                        Estancia estancia = controlador.estanciasActivas.get(matricula);
-                        vehiculo.mostrarPago(estancia, vehiculo); // Llama a la función para mostrar el pago
-                        JOptionPane.showMessageDialog(null, "Salida registrada para: " + matricula);
+                        controlador.obtenerVehiculo(matricula);
+                        JOptionPane.showMessageDialog(null, matricula);
+
+
+                        //Estancia estancia = controlador.estanciasActivas.get(matricula);
+                        //vehiculo.mostrarPago(estancia, vehiculo); // Llama a la función para mostrar el pago
                     }
                 }catch (IllegalArgumentException ex){
                     JOptionPane.showMessageDialog(null, ex.getMessage());
